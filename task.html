@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Page</title>
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+        }
+        .task {
+            background-color: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task a {
+            color: #1e90ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .done-btn {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .done-btn.completed {
+            background-color: #28a745;
+        }
+        .back-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 15px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function completeTask(button, link) {
+            window.open(link, '_blank');
+            setTimeout(() => {
+                button.classList.add('completed');
+                button.textContent = 'Completed';
+                button.disabled = true;
+            }, 2000);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Boost your earning!</h2>
+        <p>Invite friends and complete tasks to earn more coin</p>
+        <div class="task">
+            <span>Join Twitter (+50 coin)</span>
+            <button class="done-btn" onclick="completeTask(this, 'https://x.com/itx_me_sabbir')">Join</button>
+        </div>
+        <div class="task">
+            <span>Subscribe YouTube (+100 coin)</span>
+            <button class="done-btn" onclick="completeTask(this, 'https://youtube.com/@juyel_facts?si=ZBLSt20x2GKfEuMk')">Join</button>
+        </div>
+        <div class="task">
+            <span>Watch YouTube Video (+120 coin)</span>
+            <button class="done-btn" onclick="completeTask(this, 'https://youtube.com/shorts/ZwX4qRdygx8?si=E6YDNk_f0MAzrEHJ')">Watch</button>
+        </div>
+        <div class="task">
+            <span>Invite 3 friends (+100 coin)</span>
+            <button class="done-btn" onclick="completeTask(this, 'refer.html')">Join</button>
+        </div>
+        <div class="task">
+            <span>Invite 5 friends (+200 coin)</span>
+            <button class="done-btn" onclick="completeTask(this, 'refer.html')">Join</button>
+        </div>
+    </div>
+    <button onclick="window.history.back()" class="back-button">⬅ Back</button>
+</body>
+</html>
