@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Page</title>
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+        }
+        .task {
+            background-color: #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .done-btn {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .done-btn.completed {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Boost your earning!</h2>
+        <p>Invite friends and complete tasks to earn more coin</p>
+        <div class="task">
+            <span>Join Twitter (+50 coin)</span>
+            <button class="done-btn" data-task-id="twitter" data-task-link="https://x.com/itx_me_sabbir">Join</button>
+        </div>
+        <div class="task">
+            <span>Subscribe YouTube (+100 coin)</span>
+            <button class="done-btn" data-task-id="youtube" data-task-link="http://www.youtube.com/@Sabbir.Gaming_FF">Join</button>
+        </div>
+        <div class="task">
+            <span>Watch YouTube Video (+120 coin)</span>
+            <button class="done-btn" data-task-id="video" data-task-link="https://youtube.com/shorts/ZwX4qRdygx8?si=E6YDNk_f0MAzrEHJ">Watch</button>
+        </div>
+        <div class="task">
+            <span>Invite 3 friends (+100 coin)</span>
+            <button class="done-btn" data-task-id="invite3" data-task-link="refer.html">0/3</button>
+        </div>
+        <div class="task">
+            <span>Invite 5 friends (+200 coin)</span>
+            <button class="done-btn" data-task-id="invite5" data-task-link="refer.html">0/5</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || [];
+
+            document.querySelectorAll(".done-btn").forEach(button => {
+                let taskId = button.getAttribute("data-task-id");
+
+                if (completedTasks.includes(taskId)) {
+                    button.textContent = "Completed";
+                    button.classList.add("completed");
+                    button.disabled = true;
+                }
+
+                button.addEventListener("click", function () {
+                    if (!this.classList.contains("completed")) {
+                        let taskLink = this.getAttribute("data-task-link");
+                        window.open(taskLink, "_blank");
+
+                        setTimeout(() => {
+                            this.textContent = "Completed";
+                            this.classList.add("completed");
+                            this.disabled = true;
+                            completedTasks.push(taskId);
+                            localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+                        }, 2000);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

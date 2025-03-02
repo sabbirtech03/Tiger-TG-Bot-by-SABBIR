@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refer & Earn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 400px;
+            width: 90%;
+            background: white;
+            color: black;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .invite-section {
+            margin-top: 20px;
+        }
+        .invite-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        h2 {
+            color: #ffffff;
+            background-color: #007bff;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 24px;
+        }
+        .info {
+            background-color: #e7f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            color: black;
+        }
+        .copy-message {
+            display: none;
+            color: green;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+        .progress-section {
+            margin-top: 20px;
+            padding: 10px;
+            background: #d1ecf1;
+            border-radius: 5px;
+            color: black;
+        }
+        .share-button {
+            background-color: #0088cc;
+            margin-top: 10px;
+            color: black;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .share-button:hover {
+            background-color: #0077b5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Refer & Earn</h2>
+        <p>Invite your friend to earn <strong>30 coins</strong> per successful invite.</p>
+        <div class="invite-section">
+            <p><strong>Your Referral Link ⬇</strong></p>
+            <div class="invite-link">
+                <input type="text" id="inviteLink" value="https://t.me/tiger_king99_bot" readonly>
+                <button onclick="copyLink()">Copy</button>
+            </div>
+            <p id="copyMessage" class="copy-message">Link copied successfully!</p>
+            <button class="share-button" onclick="shareOnTelegram()">Send Referral link <img src="share.png" alt="share" height="15px"></button>
+        </div>
+        <div class="progress-section">
+            <p><strong>Referral Progress</strong></p>
+            <p>Successful Invites: <span id="successfulInvites">0</span></p>
+            <p>Total Coins Earned: <span id="totalCoins">0</span></p>
+        </div>
+        <div class="info">
+            <p>Share your referral link with your friends and earn rewards when they join!</p>
+        </div>
+    </div>
+
+    <script>
+        function copyLink() {
+            var copyText = document.getElementById("inviteLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            
+            var copyMessage = document.getElementById("copyMessage");
+            copyMessage.style.display = "block";
+            setTimeout(function() {
+                copyMessage.style.display = "none";
+            }, 2000);
+        }
+        
+        function goBack() {
+            window.history.back();
+        }
+
+        function updateProgress(successful, coins) {
+            document.getElementById("successfulInvites").innerText = successful;
+            document.getElementById("totalCoins").innerText = coins;
+        }
+        
+        updateProgress(0, 0);  // Example values, should be fetched dynamically
+        
+        function shareOnTelegram() {
+            var referralLink = document.getElementById("inviteLink").value;
+            var telegramUrl = "https://t.me/share/url?url=" + encodeURIComponent(referralLink) + "&text=Join%20now%20and%20earn%20rewards!";
+            window.open(telegramUrl, "_blank");
+        }
+    </script>
+</body>
+</html>

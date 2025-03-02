@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiger Coin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #content {
+            width: 90%;
+            max-width: 400px;
+            background: #444;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            min-height: 80vh;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background: rgba(34, 34, 34, 0.9);
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button {
+            background: #444;
+            border: none;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .nav-button:hover {
+            background: #ffb400;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="content">Loading...</div>
+
+    <div class="bottom-nav">
+        <button class="nav-button" onclick="loadPage('mine')">⛏ Mine</button>
+        <button class="nav-button" onclick="loadPage('refer')">🔗 Refer</button>
+        <button class="nav-button" onclick="loadPage('home')">🏠 Home</button>
+        <button class="nav-button" onclick="loadPage('task')">📋 Task</button>
+        <button class="nav-button" onclick="loadPage('air')">💰 TGE</button>
+    </div>
+
+    <script>
+        function loadPage(page) {
+            fetch(`${page}.html`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('content').innerHTML = html;
+                    reloadScripts();  
+                })
+                .catch(error => console.log("Error loading page:", error));
+        }
+
+        function reloadScripts() {
+            setTimeout(() => {
+                let hamster = document.getElementById("hamster");
+                let scoreElement = document.getElementById("score");
+                let clickSound = document.getElementById("clickSound");
+                let progressBar = document.getElementById("progress");
+                let levelElement = document.getElementById("currentLevel");
+                let countdownElement = document.getElementById("countdown");
+
+                if (hamster && scoreElement) {
+                    let coins = parseInt(localStorage.getItem('coins')) || 0;
+                    let currentLevel = parseInt(localStorage.getItem('currentLevel')) || 1;
+                    const coinsToLevelUp = 50000;
+                    const maxLevel = 10;
+
+                    scoreElement.innerHTML = `<img src="2.png" alt="Hamster"> ${coins}`;
+                    levelElement.innerText = currentLevel;
+                    progressBar.style.width = ((coins % coinsToLevelUp) / coinsToLevelUp * 100) + '%';
+
+                    hamster.onclick = function () {
+                        coins += 10;
+                        scoreElement.innerHTML = `<img src="2.png" alt="Hamster"> ${coins}`;
+                        localStorage.setItem('coins', coins);
+
+                        let progressPercent = (coins % coinsToLevelUp) / coinsToLevelUp * 100;
+                        progressBar.style.width = progressPercent + '%';
+
+                        if (coins >= coinsToLevelUp * currentLevel && currentLevel < maxLevel) {
+                            currentLevel++;
+                            levelElement.innerText = currentLevel;
+                            localStorage.setItem('currentLevel', currentLevel);
+                        }
+
+                        if (clickSound) {
+                            clickSound.play();
+                        }
+
+                        hamster.style.transform = "scale(0.9)";
+                        setTimeout(() => {
+                            hamster.style.transform = "scale(1)";
+                        }, 100);
+                    };
+                }
+
+                if (countdownElement) {
+                    startCountdown();
+                }
+            }, 500); 
+        }
+
+        function startCountdown() {
+            let eventEndDate = localStorage.getItem("eventEndDate");
+            if (!eventEndDate) {
+                let now = new Date();
+                now.setDate(now.getDate() + 30);
+                eventEndDate = now.getTime();
+                localStorage.setItem("eventEndDate", eventEndDate);
+            }
+
+            function updateCountdown() {
+                let now = new Date().getTime();
+                let distance = eventEndDate - now;
+                if (distance <= 0) {
+                    document.getElementById("countdown").innerText = "Event Over!";
+                    return;
+                }
+                let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("countdown").innerText = `${days}d ${hours}h ${minutes}m `;
+            }
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        window.onload = () => loadPage('home');
+    </script>
+</body>
+</html>

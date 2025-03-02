@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiger Coin Miner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e2e, #25273c);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+        }
+        .heading {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #ffcc00, #ff6600);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Poppins', sans-serif;
+            margin-top: -10px;
+            padding-bottom: 20px;
+        }
+        .card {
+            background: #2b2d42;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .card h2 {
+            font-size: 20px;
+            margin: 0 0 5px;
+        }
+        .card p {
+            font-size: 14px;
+            color: #ddd;
+            margin: 0;
+        }
+        .button {
+            background: #aaff00;
+            color: black;
+            font-weight: bold;
+            border: none;
+            padding: 10px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .button:hover { background: #99e600; }
+        .button.disabled { background: gray !important; cursor: not-allowed; }
+        .coin-display {
+            background: #3b3e5b;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heading">Tiger Coin Miner</div>
+
+        <h2>Daily Check-in ⬇</h2>
+        <div class="card">
+            <div>
+                <h3>Claim 30 coin<br> every 24 hours</h3>
+            </div>
+            <button class="button" id="checkInButton" onclick="checkIn()">Claim</button>
+        </div>
+
+        <h2>Coin Farming ⬇</h2>
+        <div class="card">
+            <div>
+                <h3>Earn 20 coin<br> every 3 hours</h3>
+            </div>
+            <button class="button" id="farmButton" onclick="claimFarm()">Start Farming</button>
+        </div>
+
+        <div class="coin-display">Total Coins: <span id="coinCount">0</span></div>
+    </div>
+
+    <script>
+        let coins = parseInt(localStorage.getItem("coins")) || 0;
+        let lastCheckIn = parseInt(localStorage.getItem("lastCheckIn")) || 0;
+        let farmingStart = parseInt(localStorage.getItem("farmingStart")) || 0;
+        let farmingActive = localStorage.getItem("farmingActive") === "true";
+
+        document.getElementById("coinCount").innerText = coins;
+        const checkInButton = document.getElementById("checkInButton");
+        const farmButton = document.getElementById("farmButton");
+
+        function updateCoinDisplay() {
+            document.getElementById("coinCount").innerText = coins;
+            localStorage.setItem("coins", coins);
+        }
+
+        function checkIn() {
+            let now = Date.now();
+            if (now - lastCheckIn >= 24 * 60 * 60 * 1000) {
+                coins += 30;
+                lastCheckIn = now;
+                localStorage.setItem("lastCheckIn", lastCheckIn);
+                updateCoinDisplay();
+
+                checkInButton.innerText = "✔";
+                checkInButton.classList.add("disabled");
+                checkInButton.disabled = true;
+
+                setTimeout(() => {
+                    checkInButton.innerText = "Claim";
+                    checkInButton.classList.remove("disabled");
+                    checkInButton.disabled = false;
+                }, 24 * 60 * 60 * 1000);
+            }
+        }
+
+        function claimFarm() {
+            let now = Date.now();
+            if (!farmingActive) {
+                farmingStart = now;
+                farmingActive = true;
+                localStorage.setItem("farmingStart", farmingStart);
+                localStorage.setItem("farmingActive", "true");
+                farmButton.innerText = "Claim in 3h";
+                farmButton.classList.add("disabled");
+                farmButton.disabled = true;
+
+                setTimeout(() => {
+                    farmButton.innerText = "Claim";
+                    farmButton.classList.remove("disabled");
+                    farmButton.disabled = false;
+                }, 3 * 60 * 60 * 1000);
+            } else {
+                let hoursPassed = Math.floor((now - farmingStart) / (60 * 60 * 1000));
+                let claimableCoins = hoursPassed * 5;
+                if (claimableCoins > 0) {
+                    coins += claimableCoins;
+                    farmingStart = now;
+                    localStorage.setItem("farmingStart", farmingStart);
+                    updateCoinDisplay();
+
+                    farmButton.innerText = "✔";
+                    farmButton.classList.add("disabled");
+                    farmButton.disabled = true;
+
+                    setTimeout(() => {
+                        farmButton.innerText = "Claim";
+                        farmButton.classList.remove("disabled");
+                        farmButton.disabled = false;
+                    }, 3 * 60 * 60 * 1000);
+                }
+            }
+        }
+
+        window.onload = () => {
+            let now = Date.now();
+
+            if (now - lastCheckIn < 24 * 60 * 60 * 1000) {
+                checkInButton.innerText = "✔";
+                checkInButton.classList.add("disabled");
+                checkInButton.disabled = true;
+            }
+
+            if (farmingActive && now - farmingStart >= 3 * 60 * 60 * 1000) {
+                farmButton.innerText = "Claim";
+                farmButton.classList.remove("disabled");
+                farmButton.disabled = false;
+            } else if (farmingActive) {
+                farmButton.innerText = "Claim in 3h";
+                farmButton.classList.add("disabled");
+                farmButton.disabled = true;
+            }
+        };
+    </script>
+</body>
+</html>
